@@ -1,0 +1,363 @@
+[
+  {
+    "labName": "AI Research Lab",
+    "labCode": "AI-001",
+    "location": "Building A, Floor 3",
+    "description": "Lab for AI and Robotics research"
+  },
+  {
+    "labName": "BioTech Innovation Center",
+    "labCode": "BIO-002",
+    "location": "Building B, Floor 1",
+    "description": "Focused on biotechnology and genetic engineering experiments"
+  },
+  {
+    "labName": "Cybersecurity Operations Lab",
+    "labCode": "SEC-003",
+    "location": "Building C, Floor 2",
+    "description": "Practical security analysis, penetration testing and defense simulation"
+  },
+  {
+    "labName": "Green Energy Research Unit",
+    "labCode": "ENG-004",
+    "location": "Building D, Floor 4",
+    "description": "Developing sustainable and renewable energy systems"
+  },
+  {
+    "labName": "Data Science and Analytics Hub",
+    "labCode": "DS-005",
+    "location": "Building E, Floor 3",
+    "description": "Working on machine learning, AI analytics, and big data visualization"
+  },
+  {
+    "labName": "Human-Computer Interaction Studio",
+    "labCode": "HCI-006",
+    "location": "Building F, Floor 1",
+    "description": "Experimenting with UX/UI, AR/VR interfaces, and user experience testing"
+  },
+      {
+        "labName": "Quantum Computing Lab",
+        "labCode": "QC-007",
+        "location": "Building G, Floor 2",
+        "description": "Exploring quantum algorithms and quantum circuit simulations"
+      },
+  {
+    "labName": "Robotics and Automation Lab",
+    "labCode": "ROB-008",
+    "location": "Building H, Floor 5",
+    "description": "Developing autonomous robots and industrial automation systems"
+  },
+  {
+    "labName": "Environmental Monitoring Lab",
+    "labCode": "ENV-009",
+    "location": "Building I, Floor 2",
+    "description": "Analyzing air, water, and soil quality using sensor networks"
+  },
+  {
+    "labName": "Software Engineering Lab",
+    "labCode": "SWE-010",
+    "location": "Building J, Floor 4",
+    "description": "Focusing on agile development, DevOps, and software quality assurance"
+  }
+]
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+{
+  "labId": 2,
+  "bookingDate": "2025-11-10",
+  "slotNames": ["Ca 1", "Ca 2", "Ca 3"]
+}
+
+
+{
+  "labId": 1,
+  "bookingDate": "2025-11-06",
+  "slotNames": ["Ca 1", "Ca 2", "Ca 3"]
+}
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+POST /api/rooms
+
+{
+  "labId": 1,
+  "roomName": "Phòng Thực hành 101",
+  "roomCode": "R101",
+  "capacity": 40,
+  "status": "ACTIVE"
+}
+
+PUT /api/rooms/2
+
+{
+  "labId": 1,
+  "roomName": "Phòng Thực hành 202",
+  "roomCode": "R202",
+  "capacity": 45,
+  "status": "MAINTENANCE"
+}
+
+[
+  {
+    "labId": 1,
+    "roomName": "Phòng Thực hành 101",
+    "roomCode": "R101",
+    "capacity": 40,
+    "status": "ACTIVE"
+  },
+  {
+    "labId": 1,
+    "roomName": "Phòng Thực hành 102",
+    "roomCode": "R102",
+    "capacity": 25,
+    "status": "ACTIVE"
+  },
+  {
+    "labId": 1,
+    "roomName": "Phòng Họp 103",
+    "roomCode": "R103",
+    "capacity": 15,
+    "status": "ACTIVE"
+  },
+
+  {
+    "labId": 2,
+    "roomName": "Phòng Thí nghiệm 201",
+    "roomCode": "R201",
+    "capacity": 30,
+    "status": "ACTIVE"
+  },
+  {
+    "labId": 2,
+    "roomName": "Phòng Thí nghiệm 202",
+    "roomCode": "R202",
+    "capacity": 20,
+    "status": "ACTIVE"
+  },
+  {
+    "labId": 2,
+    "roomName": "Phòng Họp 203",
+    "roomCode": "R203",
+    "capacity": 12,
+    "status": "ACTIVE"
+  },
+
+  {
+    "labId": 3,
+    "roomName": "Phòng Bảo mật 301",
+    "roomCode": "R301",
+    "capacity": 25,
+    "status": "ACTIVE"
+  },
+  {
+    "labId": 3,
+    "roomName": "Phòng Kiểm thử 302",
+    "roomCode": "R302",
+    "capacity": 18,
+    "status": "ACTIVE"
+  },
+  {
+    "labId": 3,
+    "roomName": "Phòng Phân tích 303",
+    "roomCode": "R303",
+    "capacity": 10,
+    "status": "ACTIVE"
+  },
+
+  {
+    "labId": 4,
+    "roomName": "Phòng Năng lượng 401",
+    "roomCode": "R401",
+    "capacity": 35,
+    "status": "ACTIVE"
+  },
+  {
+    "labId": 4,
+    "roomName": "Phòng Kỹ thuật 402",
+    "roomCode": "R402",
+    "capacity": 20,
+    "status": "ACTIVE"
+  },
+  {
+    "labId": 4,
+    "roomName": "Phòng Thảo luận 403",
+    "roomCode": "R403",
+    "capacity": 10,
+    "status": "ACTIVE"
+  },
+
+  {
+    "labId": 5,
+    "roomName": "Phòng Data 501",
+    "roomCode": "R501",
+    "capacity": 45,
+    "status": "ACTIVE"
+  },
+  {
+    "labId": 5,
+    "roomName": "Phòng Máy chủ 502",
+    "roomCode": "R502",
+    "capacity": 20,
+    "status": "ACTIVE"
+  },
+  {
+    "labId": 5,
+    "roomName": "Phòng Họp 503",
+    "roomCode": "R503",
+    "capacity": 12,
+    "status": "ACTIVE"
+  },
+
+  {
+    "labId": 6,
+    "roomName": "Phòng UX 601",
+    "roomCode": "R601",
+    "capacity": 20,
+    "status": "ACTIVE"
+  },
+  {
+    "labId": 6,
+    "roomName": "Phòng AR/VR 602",
+    "roomCode": "R602",
+    "capacity": 10,
+    "status": "ACTIVE"
+  },
+  {
+    "labId": 6,
+    "roomName": "Phòng Test UI 603",
+    "roomCode": "R603",
+    "capacity": 8,
+    "status": "ACTIVE"
+  },
+
+  {
+    "labId": 7,
+    "roomName": "Phòng Quantum 701",
+    "roomCode": "R701",
+    "capacity": 15,
+    "status": "ACTIVE"
+  },
+  {
+    "labId": 7,
+    "roomName": "Phòng Mạch Qubit 702",
+    "roomCode": "R702",
+    "capacity": 10,
+    "status": "ACTIVE"
+  },
+  {
+    "labId": 7,
+    "roomName": "Phòng Nghiên cứu 703",
+    "roomCode": "R703",
+    "capacity": 6,
+    "status": "ACTIVE"
+  },
+
+  {
+    "labId": 8,
+    "roomName": "Phòng Robotics 801",
+    "roomCode": "R801",
+    "capacity": 30,
+    "status": "ACTIVE"
+  },
+  {
+    "labId": 8,
+    "roomName": "Phòng Cánh tay Robot 802",
+    "roomCode": "R802",
+    "capacity": 20,
+    "status": "ACTIVE"
+  },
+  {
+    "labId": 8,
+    "roomName": "Phòng Điều khiển 803",
+    "roomCode": "R803",
+    "capacity": 12,
+    "status": "ACTIVE"
+  },
+
+  {
+    "labId": 9,
+    "roomName": "Phòng Môi trường 901",
+    "roomCode": "R901",
+    "capacity": 20,
+    "status": "ACTIVE"
+  },
+  {
+    "labId": 9,
+    "roomName": "Phòng Cảm biến 902",
+    "roomCode": "R902",
+    "capacity": 12,
+    "status": "ACTIVE"
+  },
+  {
+    "labId": 9,
+    "roomName": "Phòng Phân tích 903",
+    "roomCode": "R903",
+    "capacity": 10,
+    "status": "ACTIVE"
+  },
+
+  {
+    "labId": 10,
+    "roomName": "Phòng Software 1001",
+    "roomCode": "R1001",
+    "capacity": 50,
+    "status": "ACTIVE"
+  },
+  {
+    "labId": 10,
+    "roomName": "Phòng DevOps 1002",
+    "roomCode": "R1002",
+    "capacity": 20,
+    "status": "ACTIVE"
+  },
+  {
+    "labId": 10,
+    "roomName": "Phòng QA 1003",
+    "roomCode": "R1003",
+    "capacity": 15,
+    "status": "ACTIVE"
+  }
+]
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+{
+  "requestType": "BOOKING",
+  "memberId": 101,
+  "labId": 5,
+  "roomId": null,
+  "title": "Đặt phòng AI để huấn luyện mô hình",
+  "description": "Nhóm Machine Learning cần đặt phòng để chạy thử mô hình YOLOv8.",
+  "status": "PENDING",
+  "roomSlotIds": [12, 13, 14]
+}
+
+
+{
+  "requestType": "BOOKING",
+  "memberId": 1,
+  "labId": 1,
+  "roomId": null,
+  "title": "Đặt phòng AI để huấn luyện mô hình",
+  "description": "Nhóm Machine Learning cần đặt phòng để chạy thử mô hình YOLOv8.",
+  "status": "PENDING",
+  "roomSlotIds": [13, 14]
+}
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+

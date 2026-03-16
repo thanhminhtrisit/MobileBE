@@ -1,0 +1,16 @@
+SELECT
+    TOP (1000)
+    [room_slot_id],
+    [booking_date],
+    [end_time],
+    [is_available],
+    [slot_name],
+    [start_time],
+    [status]
+FROM
+    [LabBookingDB].[dbo].[room_slots]
+WHERE
+    MONTH([booking_date]) = 11   -- tháng 11
+    AND YEAR([booking_date]) = YEAR(GETDATE())  -- năm hiện tại
+ORDER BY
+    [booking_date] ASC;

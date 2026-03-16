@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>MAINFRAME v3.1 | CONTROL PANEL</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#0a0e17;--card:#0f1a2e;--green:#00ff9d;--cyan:#00ffff;--red:#ff3355;--text:#a0f0ff;--border:#00ff9d}
+    *{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--text);font-family:'IBM Plex Mono',monospace;min-height:100vh;overflow-y:auto;padding:20px 20px 100px;font-size:14px}
+    body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(90deg,rgba(0,255,157,.03)0,transparent 1px,transparent 50px,rgba(0,255,157,.03)51px);pointer-events:none;animation:s 8s linear infinite;z-index:0}
+    @keyframes s{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+    .header{background:linear-gradient(135deg,#00c9a7,#00ffff);padding:15px 25px;border-radius:12px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 0 30px rgba(0,255,157,.6);color:#000;font-family:'Orbitron',sans-serif;font-size:22px;font-weight:700;letter-spacing:3px;position:relative;z-index:10}
+    .user-info{display:flex;align-items:center;gap:12px;cursor:pointer;transition:.3s;padding:8px;border-radius:8px}
+    .user-info:hover{background:rgba(255,255,255,.1);transform:scale(1.02)}
+    .avatar{width:40px;height:40px;border-radius:50%;border:3px solid #000;box-shadow:0 0 15px #00ffff}
+    .badge{background:#ff0000;color:#fff;padding:4px 10px;border-radius:4px;font-size:10px;animation:p 2s infinite}
+    @keyframes p{50%{box-shadow:0 0 20px #ff0000}}
+    .btn{padding:10px 16px;border:none;border-radius:6px;font-weight:600;cursor:pointer;transition:.3s;font-size:12px;letter-spacing:1px}
+    .btn-create{background:#00ff9d;color:#000}.btn-delete{background:#ff3355;color:#fff}.btn-update{background:#00b7eb;color:#fff}.btn-logout{background:#ff0033;color:#fff;box-shadow:0 0 15px #ff3355}
+    .btn:hover{transform:scale(1.05);box-shadow:0 0 20px rgba(255,255,255,.4)}
+    .panel{background:var(--card);border:2px solid var(--border);border-radius:10px;padding:20px;margin-bottom:25px;box-shadow:0 0 20px rgba(0,255,157,.3)}
+    .title{color:var(--cyan);font-size:16px;font-weight:600;margin-bottom:15px;text-shadow:0 0 8px var(--cyan);letter-spacing:2px}
+    .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px;margin:15px 0}
+    .stat{background:rgba(0,255,157,.1);padding:12px;border-radius:8px;text-align:center;border:1px dashed var(--green)}
+    .num{font-size:28px;font-weight:700;color:var(--cyan);font-family:'Orbitron'}
+    .label{font-size:11px;color:#88f0cc}
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    th,td{padding:10px;text-align:left;border-bottom:1px solid rgba(0,255,157,.3);font-size:13px}
+    th{color:var(--cyan);background:rgba(0,255,157,.1)}
+    .actions{display:flex;gap:6px;flex-wrap:wrap}
+    .actions button{padding:6px 10px;font-size:11px}
+    .form-group{margin:10px 0}
+    input,select{width:100%;padding:10px;background:#0a1a2a;border:1px solid var(--green);border-radius:6px;color:#fff;font-family:inherit}
+    .hidden{display:none}
+    .status-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(0,255,157,.2);padding:10px;text-align:center;color:var(--cyan);font-size:11px;letter-spacing:1.5px;backdrop-filter:blur(6px);border-top:1px solid var(--border);z-index:1000}
+    .panel:last-child{margin-bottom:90px}
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div>MAINFRAME v3.1</div>
+  <div style="display:flex;gap:15px;align-items:center;">
+    <a href="#" onclick="goToProfile();return false;" style="text-decoration:none;color:inherit;" title="My Profile">
+      <div class="user-info">
+        <img th:src="${user.photoURL} ?: 'https://via.placeholder.com/40?text=U'" class="avatar">
+        <div>
+          <div th:text="${user.displayName} ?: 'ROOT'">ROOT</div>
+          <div style="font-size:10px;" th:text="${user.email}">admin@labrynth.os</div>
+        </div>
+        <div class="badge">GOD MODE</div>
+      </div>
+    </a>
+    <button class="btn btn-logout" onclick="logout()">LOGOUT</button>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="panel">
+  <div class="title">SYSTEM STATUS</div>
+  <div class="stats">
+    <div class="stat"><div class="num" id="totalUsers">--</div><div class="label">TOTAL USERS</div></div>
+    <div class="stat"><div class="num" id="totalLabs">--</div><div class="label">TOTAL LABS</div></div>
+    <div class="stat"><div class="num" id="activeLabs">--</div><div class="label">ACTIVE LABS</div></div>
+    <div class="stat"><div class="num" id="totalRooms">--</div><div class="label">TOTAL ROOMS</div></div>
+    <div class="stat"><div class="num" id="activeRooms">--</div><div class="label">ACTIVE ROOMS</div></div>
+    <div class="stat"><div class="num" id="systemLoad">--%</div><div class="label">SYSTEM LOAD</div></div>
+  </div>
+</div>
+
+<!-- USER CONTROL -->
+<div class="panel">
+  <div class="title">USER CONTROL</div>
+  <button class="btn btn-create" onclick="showCreateUser()">+ NEW USER</button>
+  <button class="btn btn-update" onclick="loadUsers()">REFRESH</button>
+
+  <div id="createUserForm" class="hidden" style="margin:15px 0;padding:15px;background:rgba(0,255,157,.1);border-radius:8px;">
+    <div class="form-group"><input id="newUsername" placeholder="Username" required></div>
+    <div class="form-group"><input id="newEmail" type="email" placeholder="Email" required></div>
+    <div class="form-group"><input id="newFullName" placeholder="Full Name"></div>
+    <div class="form-group"><input id="newPhone" placeholder="Phone"></div>
+    <div class="form-group"><label><input type="checkbox" id="newAdmin"> Grant Admin</label></div>
+    <button class="btn btn-create" onclick="createUser()">CREATE USER</button>
+    <button class="btn" onclick="hideCreateUser()">Cancel</button>
+  </div>
+
+  <div id="editUserForm" class="hidden" style="margin:15px 0;padding:15px;background:rgba(0,255,157,.1);border-radius:8px;">
+    <input type="hidden" id="editUserId">
+    <div class="form-group"><input id="editUsername" placeholder="Username" required></div>
+    <div class="form-group"><input id="editEmail" type="email" placeholder="Email" required></div>
+    <div class="form-group"><input id="editFullName" placeholder="Full Name"></div>
+    <div class="form-group"><input id="editPhone" placeholder="Phone"></div>
+    <div class="form-group"><label><input type="checkbox" id="editAdmin"> Grant Admin</label></div>
+    <button class="btn btn-update" onclick="updateUser()">SAVE CHANGES</button>
+    <button class="btn" onclick="hideEditUser()">Cancel</button>
+  </div>
+
+  <table id="userTable">
+    <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Admin</th><th>Actions</th></tr></thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<!-- LAB CONTROL -->
+<div class="panel">
+  <div class="title">LAB CONTROL</div>
+  <button class="btn btn-create" onclick="showCreateLab()">+ NEW LAB</button>
+  <button class="btn btn-update" onclick="loadLabs()">REFRESH</button>
+
+  <div id="createLabForm" class="hidden" style="margin:15px 0;padding:15px;background:rgba(0,255,157,.1);border-radius:8px;">
+    <div class="form-group"><input id="labName" placeholder="Lab Name" required></div>
+    <div class="form-group"><input id="labCode" placeholder="Lab Code" required></div>
+    <div class="form-group"><input id="location" placeholder="Location"></div>
+    <div class="form-group"><input id="description" placeholder="Description"></div>
+    <button class="btn btn-create" onclick="createLab()">CREATE LAB</button>
+    <button class="btn" onclick="hideCreateLab()">Cancel</button>
+  </div>
+
+  <div id="editLabForm" class="hidden" style="margin:15px 0;padding:15px;background:rgba(0,255,157,.1);border-radius:8px;">
+    <input type="hidden" id="editLabId">
+    <div class="form-group"><input id="editLabName" placeholder="Lab Name" required></div>
+    <div class="form-group"><input id="editLabCode" placeholder="Lab Code" required></div>
+    <div class="form-group"><input id="editLocation" placeholder="Location"></div>
+    <div class="form-group"><input id="editDescription" placeholder="Description"></div>
+    <button class="btn btn-update" onclick="updateLab()">SAVE CHANGES</button>
+    <button class="btn" onclick="hideEditLab()">Cancel</button>
+  </div>
+
+  <table id="labTable">
+    <thead><tr><th>ID</th><th>Name</th><th>Code</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<!-- ROOM CONTROL -->
+<div class="panel">
+  <div class="title">ROOM CONTROL</div>
+  <button class="btn btn-create" onclick="showCreateRoom()">+ NEW ROOM</button>
+  <button class="btn btn-update" onclick="loadRooms()">REFRESH</button>
+
+  <div id="createRoomForm" class="hidden" style="margin:15px 0;padding:15px;background:rgba(0,255,157,.1);border-radius:8px;">
+    <div class="form-group">
+      <select id="newRoomLabId" required>
+        <option value="">Select Lab</option>
+      </select>
+    </div>
+    <div class="form-group"><input id="newRoomName" placeholder="Room Name" required></div>
+    <div class="form-group"><input id="newRoomCode" placeholder="Room Code" required></div>
+    <div class="form-group"><input id="newCapacity" type="number" placeholder="Capacity" min="1"></div>
+    <button class="btn btn-create" onclick="createRoom()">CREATE ROOM</button>
+    <button class="btn" onclick="hideCreateRoom()">Cancel</button>
+  </div>
+
+  <div id="editRoomForm" class="hidden" style="margin:15px 0;padding:15px;background:rgba(0,255,157,.1);border-radius:8px;">
+    <input type="hidden" id="editRoomId">
+    <div class="form-group">
+      <select id="editRoomLabId" required>
+        <option value="">Select Lab</option>
+      </select>
+    </div>
+    <div class="form-group"><input id="editRoomName" placeholder="Room Name" required></div>
+    <div class="form-group"><input id="editRoomCode" placeholder="Room Code" required></div>
+    <div class="form-group"><input id="editCapacity" type="number" placeholder="Capacity" min="1"></div>
+    <button class="btn btn-update" onclick="updateRoom()">SAVE CHANGES</button>
+    <button class="btn" onclick="hideEditRoom()">Cancel</button>
+  </div>
+
+  <table id="roomTable">
+    <thead><tr><th>ID</th><th>Name</th><th>Code</th><th>Lab</th><th>Capacity</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<div class="status-bar">
+  CONTROL PANEL ACTIVE • <span id="clock">--:--:--</span> • ALL SYSTEMS NOMINAL
+</div>
+
+<script th:inline="javascript">
+  /*<![CDATA[*/
+  const USER = '/api/users', LAB = '/api/labs', ROOM = '/api/rooms';
+  const STATUS_CYCLE = ['ACTIVE', 'INACTIVE', 'MAINTENANCE'];
+
+  // PROFILE & LOGOUT
+  function goToProfile() {
+    const id = /*[[${user.userId}]]*/ null;
+    location.href = id ? `/profile?userId=${id}` : '/profile';
+  }
+  function logout() {
+    if (confirm('Logout now?')) fetch('/logout', { method: 'POST' }).finally(() => location.href = '/login');
+  }
+
+  // CLOCK
+  setInterval(() => {
+    document.getElementById('clock').textContent = new Date().toLocaleTimeString('vi-VN', { hour12: false });
+  }, 1000);
+
+  // STATS
+  async function loadStats() {
+    try {
+      const [u, l, r] = await Promise.all([fetch(USER), fetch(LAB), fetch(ROOM)]);
+      const users = await u.json(), labs = await l.json(), rooms = await r.json();
+      document.getElementById('totalUsers').textContent = users.length;
+      document.getElementById('totalLabs').textContent = labs.length;
+      document.getElementById('activeLabs').textContent = labs.filter(x => x.status === 'ACTIVE').length;
+      document.getElementById('totalRooms').textContent = rooms.length;
+      document.getElementById('activeRooms').textContent = rooms.filter(x => x.status === 'ACTIVE').length;
+      document.getElementById('systemLoad').textContent = Math.floor(Math.random() * 30 + 20);
+    } catch (e) { console.error(e); }
+  }
+
+  // === USER CRUD ===
+  async function loadUsers() {
+    const res = await fetch(USER); const users = await res.json();
+    const tbody = document.querySelector('#userTable tbody'); tbody.innerHTML = '';
+    users.forEach(u => {
+      const tr = document.createElement('tr');
+      const esc = s => s ? s.replace(/'/g, "\\'") : '';
+      const isAdmin = u.admin === true || u.admin === 'true';
+      tr.innerHTML = `
+        <td>${u.userId}</td>
+        <td>${esc(u.fullName || u.username)}</td>
+        <td>${esc(u.email)}</td>
+        <td style="color:${isAdmin ? '#55ff55' : '#ff5555'}">${isAdmin ? 'YES' : 'NO'}</td>
+        <td class="actions">
+          <button class="btn btn-update" onclick="showEditUser(${u.userId},'${esc(u.username)}','${esc(u.email)}','${esc(u.fullName)}','${esc(u.phone)}',${isAdmin})">Edit</button>
+          <button class="btn btn-delete" onclick="deleteUser(${u.userId})">Delete</button>
+        </td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function showCreateUser() { document.getElementById('createUserForm').classList.remove('hidden'); }
+  function hideCreateUser() { document.getElementById('createUserForm').classList.add('hidden'); }
+  async function createUser() {
+    const d = {
+      username: document.getElementById('newUsername').value.trim(),
+      email: document.getElementById('newEmail').value.trim(),
+      fullName: document.getElementById('newFullName').value.trim(),
+      phone: document.getElementById('newPhone').value.trim(),
+      admin: document.getElementById('newAdmin').checked
+    };
+    if (!d.username || !d.email) return alert('Username and Email are required!');
+    await fetch(USER, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) });
+    hideCreateUser(); loadUsers(); loadStats();
+  }
+
+  async function deleteUser(id) {
+    if (confirm('Delete user?')) {
+      await fetch(`${USER}/${id}`, { method: 'DELETE' });
+      loadUsers(); loadStats();
+    }
+  }
+
+  function showEditUser(id, username, email, fullName, phone, admin) {
+    document.getElementById('editUserId').value = id;
+    document.getElementById('editUsername').value = username || '';
+    document.getElementById('editEmail').value = email || '';
+    document.getElementById('editFullName').value = fullName || '';
+    document.getElementById('editPhone').value = phone || '';
+    document.getElementById('editAdmin').checked = admin === true;
+    document.getElementById('editUserForm').classList.remove('hidden');
+  }
+  function hideEditUser() { document.getElementById('editUserForm').classList.add('hidden'); }
+  async function updateUser() {
+    const id = document.getElementById('editUserId').value;
+    const d = {
+      username: document.getElementById('editUsername').value.trim(),
+      email: document.getElementById('editEmail').value.trim(),
+      fullName: document.getElementById('editFullName').value.trim(),
+      phone: document.getElementById('editPhone').value.trim(),
+      admin: document.getElementById('editAdmin').checked
+    };
+    if (!d.username || !d.email) return alert('Username and Email are required!');
+    await fetch(`${USER}/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) });
+    hideEditUser(); loadUsers(); loadStats();
+  }
+
+  // === LAB CRUD ===
+  async function loadLabs() {
+    const res = await fetch(LAB); const labs = await res.json();
+    const tbody = document.querySelector('#labTable tbody'); tbody.innerHTML = '';
+    labs.forEach(l => {
+      const tr = document.createElement('tr');
+      const esc = s => s ? s.replace(/'/g, "\\'") : '';
+      const color = l.status === 'ACTIVE' ? '#55ff55' : l.status === 'INACTIVE' ? '#ff5555' : '#ffaa00';
+      tr.innerHTML = `
+        <td>${l.labId}</td>
+        <td>${esc(l.labName)}</td>
+        <td>${esc(l.labCode)}</td>
+        <td><span style="color:${color}">${l.status}</span></td>
+        <td class="actions">
+          <button class="btn btn-update" onclick="showEditLab(${l.labId},'${esc(l.labName)}','${esc(l.labCode)}','${esc(l.location)}','${esc(l.description)}')">Edit</button>
+          <button class="btn btn-update" onclick="cycleStatus('lab',${l.labId},'${l.status}')">Next</button>
+          <button class="btn btn-delete" onclick="deleteLab(${l.labId})">Delete</button>
+        </td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function showCreateLab() { document.getElementById('createLabForm').classList.remove('hidden'); }
+  function hideCreateLab() { document.getElementById('createLabForm').classList.add('hidden'); }
+  async function createLab() {
+    const d = {
+      labName: document.getElementById('labName').value.trim(),
+      labCode: document.getElementById('labCode').value.trim(),
+      location: document.getElementById('location').value.trim(),
+      description: document.getElementById('description').value.trim()
+    };
+    if (!d.labName || !d.labCode) return alert('Lab Name and Code are required!');
+    await fetch(LAB, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) });
+    hideCreateLab(); loadLabs(); loadStats();
+  }
+
+  async function deleteLab(id) {
+    if (confirm('Delete lab?')) {
+      await fetch(`${LAB}/${id}`, { method: 'DELETE' });
+      loadLabs(); loadStats();
+    }
+  }
+
+  function showEditLab(id, name, code, location, desc) {
+    document.getElementById('editLabId').value = id;
+    document.getElementById('editLabName').value = name || '';
+    document.getElementById('editLabCode').value = code || '';
+    document.getElementById('editLocation').value = location || '';
+    document.getElementById('editDescription').value = desc || '';
+    document.getElementById('editLabForm').classList.remove('hidden');
+  }
+  function hideEditLab() { document.getElementById('editLabForm').classList.add('hidden'); }
+  async function updateLab() {
+    const id = document.getElementById('editLabId').value;
+    const d = {
+      labName: document.getElementById('editLabName').value.trim(),
+      labCode: document.getElementById('editLabCode').value.trim(),
+      location: document.getElementById('editLocation').value.trim(),
+      description: document.getElementById('editDescription').value.trim()
+    };
+    if (!d.labName || !d.labCode) return alert('Lab Name and Code are required!');
+    await fetch(`${LAB}/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) });
+    hideEditLab(); loadLabs(); loadStats();
+  }
+
+  // === ROOM CRUD ===
+  async function loadLabsIntoSelect(selectId, selected = null) {
+    const select = document.getElementById(selectId);
+    select.innerHTML = '<option value="">Select Lab</option>';
+    try {
+      const res = await fetch(LAB);
+      const labs = await res.json();
+      labs.forEach(lab => {
+        const opt = document.createElement('option');
+        opt.value = lab.labId;
+        opt.textContent = `${lab.labName} (${lab.labCode})`;
+        if (selected && selected == lab.labId) opt.selected = true;
+        select.appendChild(opt);
+      });
+    } catch (e) { console.error(e); }
+  }
+
+  async function loadRooms() {
+    const res = await fetch(ROOM);
+    const rooms = await res.json();
+    const tbody = document.querySelector('#roomTable tbody');
+    tbody.innerHTML = '';
+    rooms.forEach(r => {
+      const tr = document.createElement('tr');
+      const esc = s => s ? s.replace(/'/g, "\\'") : '';
+      const color = r.status === 'ACTIVE' ? '#55ff55' : r.status === 'INACTIVE' ? '#ff5555' : '#ffaa00';
+      tr.innerHTML = `
+        <td>${r.roomId}</td>
+        <td>${esc(r.roomName)}</td>
+        <td>${esc(r.roomCode)}</td>
+        <td>${esc(r.labName)}</td>
+        <td>${r.capacity || '-'}</td>
+        <td><span style="color:${color}">${r.status}</span></td>
+        <td class="actions">
+          <button class="btn btn-update" onclick="showEditRoom(${r.roomId},${r.labId || 'null'},'${esc(r.roomName)}','${esc(r.roomCode)}',${r.capacity || 'null'})">Edit</button>
+          <button class="btn btn-update" onclick="cycleStatus('room',${r.roomId},'${r.status}')">Next</button>
+          <button class="btn btn-delete" onclick="deleteRoom(${r.roomId})">Delete</button>
+        </td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function showCreateRoom() { loadLabsIntoSelect('newRoomLabId'); document.getElementById('createRoomForm').classList.remove('hidden'); }
+  function hideCreateRoom() { document.getElementById('createRoomForm').classList.add('hidden'); }
+  async function createRoom() {
+    const d = {
+      labId: document.getElementById('newRoomLabId').value,
+      roomName: document.getElementById('newRoomName').value.trim(),
+      roomCode: document.getElementById('newRoomCode').value.trim(),
+      capacity: parseInt(document.getElementById('newCapacity').value) || null,
+      status: 'ACTIVE'
+    };
+    if (!d.labId || !d.roomName || !d.roomCode) return alert('Lab, Name and Code are required!');
+    await fetch(ROOM, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) });
+    hideCreateRoom(); loadRooms(); loadStats();
+  }
+
+  async function deleteRoom(id) {
+    if (confirm('Delete room?')) {
+      await fetch(`${ROOM}/${id}`, { method: 'DELETE' });
+      loadRooms(); loadStats();
+    }
+  }
+
+  function showEditRoom(id, labId, name, code, capacity) {
+    document.getElementById('editRoomId').value = id;
+    loadLabsIntoSelect('editRoomLabId', labId);
+    document.getElementById('editRoomName').value = name || '';
+    document.getElementById('editRoomCode').value = code || '';
+    document.getElementById('editCapacity').value = capacity || '';
+    document.getElementById('editRoomForm').classList.remove('hidden');
+  }
+  function hideEditRoom() { document.getElementById('editRoomForm').classList.add('hidden'); }
+  async function updateRoom() {
+    const id = document.getElementById('editRoomId').value;
+    const d = {
+      labId: document.getElementById('editRoomLabId').value,
+      roomName: document.getElementById('editRoomName').value.trim(),
+      roomCode: document.getElementById('editRoomCode').value.trim(),
+      capacity: parseInt(document.getElementById('editCapacity').value) || null
+    };
+    if (!d.labId || !d.roomName || !d.roomCode) return alert('Lab, Name and Code are required!');
+    await fetch(`${ROOM}/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) });
+    hideEditRoom(); loadRooms(); loadStats();
+  }
+
+  // === CYCLE STATUS (Lab & Room) ===
+  async function cycleStatus(type, id, cur) {
+    const next = STATUS_CYCLE[(STATUS_CYCLE.indexOf(cur) + 1) % 3];
+    const url = type === 'lab' ? `${LAB}/${id}/status?status=${next}` : `${ROOM}/${id}/status?status=${next}`;
+    await fetch(url, { method: 'PATCH' });
+    type === 'lab' ? loadLabs() : loadRooms();
+  }
+
+  // INIT
+  document.addEventListener('DOMContentLoaded', () => {
+    loadStats(); loadUsers(); loadLabs(); loadRooms();
+    setInterval(() => { loadStats(); loadUsers(); loadLabs(); loadRooms(); }, 15000);
+  });
+  /*]]>*/
+</script>
+</body>
+</html>
