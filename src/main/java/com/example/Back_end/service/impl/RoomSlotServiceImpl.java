@@ -5,6 +5,7 @@ import com.example.Back_end.dto.RoomSlotResponseDTO;
 import com.example.Back_end.entity.RoomSlot;
 import com.example.Back_end.repository.RoomSlotRepository;
 import com.example.Back_end.service.interf.RoomSlotService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -98,35 +99,24 @@ public class RoomSlotServiceImpl implements RoomSlotService {
 
     // ✅ Sinh room slot cho năm bất kỳ
     @Override
-    public String  generateRoomSlotsForYear(int year) {
+    @Transactional
+    public String generateRoomSlotsForYear(int year) {
         LocalDate startDate = LocalDate.of(year, 1, 1);
         LocalDate endDate = LocalDate.of(year, 12, 31);
 
-        boolean exists = roomSlotRepository.existsByBookingDateBetween(startDate, endDate);
-        if (exists) {
-            return "⚠️ Năm " + year + " đã có RoomSlot trong cơ sở dữ liệu!";
+        // Kiểm tra đã tồn tại chưa
+        if (roomSlotRepository.existsByBookingDateBetween(startDate, endDate)) {
+            return "Warning: Năm " + year + " đã có RoomSlot trong DB!";
         }
 
         List<RoomSlot> slotsToSave = new ArrayList<>();
-
-        // 5 ca cố định
         String[] slotNames = {"Ca 1", "Ca 2", "Ca 3", "Ca 4", "Ca 5"};
-        LocalTime[] startTimes = {
-                LocalTime.of(7, 0),
-                LocalTime.of(9, 0),
-                LocalTime.of(13, 0),
-                LocalTime.of(15, 0),
-                LocalTime.of(18, 0)
-        };
-        LocalTime[] endTimes = {
-                LocalTime.of(9, 0),
-                LocalTime.of(11, 0),
-                LocalTime.of(15, 0),
-                LocalTime.of(17, 0),
-                LocalTime.of(20, 0)
-        };
+        LocalTime[] startTimes = {LocalTime.of(7,0), LocalTime.of(9,0), LocalTime.of(13,0), LocalTime.of(15,0), LocalTime.of(18,0)};
+        LocalTime[] endTimes   = {LocalTime.of(9,0), LocalTime.of(11,0), LocalTime.of(15,0), LocalTime.of(17,0), LocalTime.of(20,0)};
 
-        // Lặp qua từng ngày trong năm
+        System.out.println("🔄 Đang tạo RoomSlot cho năm " + year + "...");
+
+        int count = 0;
         for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
             for (int i = 0; i < 5; i++) {
                 RoomSlot rs = new RoomSlot();
@@ -137,11 +127,20 @@ public class RoomSlotServiceImpl implements RoomSlotService {
                 rs.setStatus("AVAILABLE");
                 rs.setIsAvailable(true);
                 slotsToSave.add(rs);
+
+                count++;
+                if (count % 500 == 0) {
+                    System.out.println("✅ Đã tạo " + count + " slots...");
+                }
             }
         }
 
+        // Batch insert an toàn
         roomSlotRepository.saveAll(slotsToSave);
-        return "✅ Đã tạo " + slotsToSave.size() + " RoomSlots cho năm " + year + "!";
+        roomSlotRepository.flush();
+
+        System.out.println("🎉 Hoàn thành! Đã tạo " + slotsToSave.size() + " RoomSlot cho năm " + year);
+        return "Success: Đã tạo " + slotsToSave.size() + " RoomSlots cho năm " + year + "!";
     }
 
     @Override
