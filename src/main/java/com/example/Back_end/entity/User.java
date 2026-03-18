@@ -1,5 +1,6 @@
 package com.example.Back_end.entity;
 
+import com.example.Back_end.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,6 +27,13 @@ public class User {
 
     @Column(name = "firebase_uid", unique = true, nullable = false)
     private String firebaseUid;
+
+    @Column(name = "password")
+    private String password;   // sẽ lưu hash BCrypt
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = true)
+    private Role role = Role.MEMBER;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
